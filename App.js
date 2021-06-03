@@ -6,6 +6,19 @@ import React, {useState} from 'react';
 export default function App() {
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
+
+  const handleAddTask = () => {
+    Keyboard.dismiss();
+    setTaskItems([...taskItems, task])
+    setTask(null);
+    console.log(task)
+  }
+
+  const completeTask = (index) => {
+    let itemsCopy = [...taskItems];
+    itemsCopy.splice(index, 1);
+    setTaskItems(itemsCopy)
+  }
   return (
     <View style={styles.container}>
 
@@ -17,8 +30,20 @@ export default function App() {
 
         <View style={styles.items}>
           {/* This is where the tasks we go! */}
-          <Task text={'Task 1'}/>
-          <Task text={'Task 2'}/>
+          {
+            taskItems.map((item, index) => {
+              return (
+                <TouchableOpacity key={index}  onPress={() => completeTask(index)}>
+                  <Task text={item} /> 
+                </TouchableOpacity>
+              )
+            })
+          }
+
+
+
+          {/* <Task text={'Task 1'}/>
+          <Task text={'Task 2'}/> */}
         </View>
 
       </View>
@@ -26,9 +51,9 @@ export default function App() {
       <KeyboardAvoidingView
       // behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.writeTaskWrapper}>
-        <TextInput style={styles.input} placeholder={'Write a task'}/>
+        <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)}/>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => handleAddTask()}>
           <View style={styles.addWrapper}>
             <Text style={styles.addText}>+</Text>
           </View>
